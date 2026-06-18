@@ -5,7 +5,11 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write
+
 env:
+  REGISTRY: prabhatcr001.azurecr.io
   IMAGE_NAME: incident-ui
 
 jobs:
@@ -15,20 +19,30 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to ACR
         run: |
-          echo "${{ secrets.ACR_PASSWORD }}" | docker login prabhatcr001.azurecr.io \
+          echo "${{ secrets.ACR_PASSWORD }}" | docker login $REGISTRY \
             -u "${{ secrets.ACR_USERNAME }}" \
             --password-stdin
 
       - name: Build Docker image
         run: |
-          docker build -t prabhatcr001.azurecr.io/$IMAGE_NAME:${{ github.sha }} .
-          docker tag prabhatcr001.azurecr.io/$IMAGE_NAME:${{ github.sha }} \
-                     prabhatcr001.azurecr.io/$IMAGE_NAME:latest
+          docker build -t $REGISTRY/$IMAGE_NAME:${{ github.sha }} .
+          docker tag $REGISTRY/$IMAGE_NAME:${{ github.sha }} $REGISTRY/$IMAGE_NAME:latest
 
       - name: Push Docker image
         run: |
-          docker push prabhatcr001.azurecr.io/$IMAGE_NAME:${{ github.sha }}
-          docker push prabhatcr001.azurecr.io/$IMAGE_NAME:latest
+          docker push $REGISTRY/$IMAGE_NAME:${{ github.sha }}
+          docker push $REGISTRY/$IMAGE_NAME:latest
+
+      - name: Update Kubernetes manifest image tag
+        run: |
+          sed -i "s|image: $REGISTRY/$IMAGE_NAME:.*|image: $REGISTRY/$IMAGE_NAME:${{ github.sha }}|" k8s/base/frontend-deployment.yaml
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add k8s/base/frontend-deployment.yaml
+          git commit -m "Update UI image tag to ${{ github.sha }}" || echo "No changes to commit"
+          git push
