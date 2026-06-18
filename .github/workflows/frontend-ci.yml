@@ -1,0 +1,36 @@
+name: Frontend CI - Build Docker Image
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  REGISTRY: ${{ secrets.AZURE_CONTAINER_REGISTRY }}
+  IMAGE_NAME: incident-ui
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t $REGISTRY/$IMAGE_NAME:${{ github.sha }} .
+
+      - name: Login to Azure Container Registry
+        if: github.event_name == 'push'
+        run: |
+          echo "${{ secrets.AZURE_REGISTRY_PASSWORD }}" | docker login $REGISTRY \
+            --username ${{ secrets.AZURE_REGISTRY_USERNAME }} \
+            --password-stdin
+
+      - name: Push Docker image to ACR
+        if: github.event_name == 'push'
+        run: |
+          docker push $REGISTRY/$IMAGE_NAME:${{ github.sha }}

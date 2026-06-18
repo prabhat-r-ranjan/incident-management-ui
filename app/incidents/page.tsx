@@ -16,6 +16,7 @@ export default function IncidentsPage() {
   }, [filter]);
 
   const fetchIncidents = async () => {
+    setLoading(true);
     try {
       let data;
       if (filter.status || filter.severity) {
@@ -23,9 +24,10 @@ export default function IncidentsPage() {
       } else {
         data = await incidentApi.getAll();
       }
-      setIncidents(data);
+      setIncidents(data || []); // Ensure it's always an array
     } catch (error) {
       toast.error('Failed to fetch incidents');
+      setIncidents([]);
     } finally {
       setLoading(false);
     }
@@ -62,9 +64,9 @@ export default function IncidentsPage() {
   }
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Incidents</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Incidents</h1>
         <a
           href="/incidents/create"
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
@@ -74,7 +76,7 @@ export default function IncidentsPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+      <div className="bg-white rounded-lg border p-4 mb-6">
         <div className="flex gap-4">
           <select
             className="border rounded-md px-3 py-2"
@@ -109,7 +111,9 @@ export default function IncidentsPage() {
       {/* Incidents List */}
       <div className="space-y-4">
         {incidents.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">No incidents found</p>
+          <div className="bg-gray-50 rounded-lg border p-12 text-center">
+            <p className="text-gray-500">No incidents found</p>
+          </div>
         ) : (
           incidents.map((incident) => (
             <IncidentCard

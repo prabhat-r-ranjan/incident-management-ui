@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Incident, CreateIncidentDTO, Statistics } from '@/types/incident';
 
-const API_BASE_URL = 'http://localhost:8081/api';
+const API_BASE_URL = 'http://20.72.161.111:8081/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
