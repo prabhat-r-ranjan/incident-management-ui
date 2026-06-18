@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: incident-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: incident-ui
+  template:
+    metadata:
+      labels:
+        app: incident-ui
+    spec:
+      containers:
+        - name: incident-ui
+          image: prabhatcr001.azurecr.io/incident-ui:latest
+          ports:
+            - containerPort: 3000
