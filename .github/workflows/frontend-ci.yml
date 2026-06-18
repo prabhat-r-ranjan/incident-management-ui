@@ -1,36 +1,34 @@
-name: Frontend CI - Build Docker Image
+name: Frontend CI
 
 on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
 
 env:
-  REGISTRY: ${{ secrets.AZURE_CONTAINER_REGISTRY }}
   IMAGE_NAME: incident-ui
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -t $REGISTRY/$IMAGE_NAME:${{ github.sha }} .
-
-      - name: Login to Azure Container Registry
-        if: github.event_name == 'push'
+      - name: Login to ACR
         run: |
-          echo "${{ secrets.AZURE_REGISTRY_PASSWORD }}" | docker login $REGISTRY \
-            --username ${{ secrets.AZURE_REGISTRY_USERNAME }} \
+          echo "${{ secrets.ACR_PASSWORD }}" | docker login prabhatcr001.azurecr.io \
+            -u "${{ secrets.ACR_USERNAME }}" \
             --password-stdin
 
-      - name: Push Docker image to ACR
-        if: github.event_name == 'push'
+      - name: Build Docker image
         run: |
-          docker push $REGISTRY/$IMAGE_NAME:${{ github.sha }}
+          docker build -t prabhatcr001.azurecr.io/$IMAGE_NAME:${{ github.sha }} .
+          docker tag prabhatcr001.azurecr.io/$IMAGE_NAME:${{ github.sha }} \
+                     prabhatcr001.azurecr.io/$IMAGE_NAME:latest
+
+      - name: Push Docker image
+        run: |
+          docker push prabhatcr001.azurecr.io/$IMAGE_NAME:${{ github.sha }}
+          docker push prabhatcr001.azurecr.io/$IMAGE_NAME:latest
