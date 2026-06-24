@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Incident, CreateIncidentDTO, Statistics } from '@/types/incident';
 import { Problem, CreateProblemDTO, ProblemStatistics } from '@/types/problem';
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = 'http://20.72.161.111:8081/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
