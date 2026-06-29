@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: incident-ui
-          image: prabhatcr001.azurecr.io/incident-ui:5d78dad88eeb829c58ea370c8a8af9f80596817b
+          image: prabhatcr001.azurecr.io/incident-ui:e067116f2909bee9e4483935709f997d5087673b
           ports:
             - containerPort: 3000
