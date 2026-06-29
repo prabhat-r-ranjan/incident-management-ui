@@ -8,18 +8,16 @@ import {
   AlertCircle,
   PlusCircle,
   AlertTriangle,
-  RefreshCw,
-  FileText,
-  Bell,
-  Settings,
   ChevronLeft,
   ChevronRight,
   Menu,
   X,
-  User,
   LogOut,
   HelpCircle,
-  Star
+  Moon,
+  Sun,
+  Settings,
+  User
 } from 'lucide-react';
 
 interface NavItem {
@@ -27,22 +25,24 @@ interface NavItem {
   href: string;
   icon: React.ReactNode;
   badge?: number;
-  color?: string;
 }
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+    document.documentElement.classList.toggle('dark');
+  };
 
   const navItems: NavItem[] = [
-    { name: 'Dashboard', href: '/', icon: <LayoutDashboard className="w-5 h-5" />, color: 'text-blue-500' },
-    { name: 'Incidents', href: '/incidents', icon: <AlertCircle className="w-5 h-5" />, badge: 12, color: 'text-red-500' },
-    { name: 'New Incident', href: '/incidents/new', icon: <PlusCircle className="w-5 h-5" />, color: 'text-green-500' },
-    { name: 'Problems', href: '/problems', icon: <AlertTriangle className="w-5 h-5" />, color: 'text-yellow-500' },
-    { name: 'Changes', href: '/changes', icon: <RefreshCw className="w-5 h-5" />, color: 'text-purple-500' },
-    { name: 'Reports', href: '/reports', icon: <FileText className="w-5 h-5" />, color: 'text-indigo-500' },
-    { name: 'Alerts', href: '/alerts', icon: <Bell className="w-5 h-5" />, badge: 3, color: 'text-orange-500' },
+    { name: 'Dashboard', href: '/', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { name: 'Incidents', href: '/incidents', icon: <AlertCircle className="w-5 h-5" />, badge: 12 },
+    { name: 'New Incident', href: '/incidents/new', icon: <PlusCircle className="w-5 h-5" /> },
+    { name: 'Problems', href: '/problems', icon: <AlertTriangle className="w-5 h-5" /> },
   ];
 
   return (
@@ -50,7 +50,11 @@ export default function Sidebar() {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-3 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-white"
+        className={`lg:hidden fixed top-4 left-4 z-50 p-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ${
+          isDarkMode 
+            ? 'bg-gray-800 text-white shadow-gray-700/30' 
+            : 'bg-gradient-to-br from-blue-600 to-blue-700 text-white'
+        }`}
       >
         {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
@@ -66,14 +70,16 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 h-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 z-40
+          fixed top-0 left-0 h-full z-40
           transition-all duration-300 ease-in-out
           ${isCollapsed ? 'w-20' : 'w-64'}
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           shadow-2xl
+          bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900
+          border-r border-white/10
         `}
       >
-        {/* Decorative gradient line at top */}
+        {/* Decorative gradient line */}
         <div className="h-1 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400" />
 
         {/* Logo */}
@@ -168,6 +174,7 @@ export default function Sidebar() {
           <div className="mt-8 pt-4 border-t border-white/10">
             {!isCollapsed ? (
               <div className="space-y-1">
+                {/* User Profile */}
                 <div className="flex items-center gap-3 px-3 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-200 cursor-pointer group">
                   <div className="relative">
                     <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-lg shadow-blue-500/20">
@@ -179,14 +186,26 @@ export default function Sidebar() {
                     <p className="text-sm font-semibold text-white truncate">Prabhat Ranjan</p>
                     <p className="text-xs text-gray-400 truncate">Administrator</p>
                   </div>
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <button className="p-1 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white">
-                      <Settings className="w-4 h-4" />
-                    </button>
-                  </div>
                 </div>
                 
+                {/* Action Buttons */}
                 <div className="flex items-center gap-1 px-2">
+                  <button 
+                    onClick={toggleTheme}
+                    className="flex-1 px-3 py-2 text-xs text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                  >
+                    {isDarkMode ? (
+                      <>
+                        <Sun className="w-4 h-4" />
+                        Light
+                      </>
+                    ) : (
+                      <>
+                        <Moon className="w-4 h-4" />
+                        Dark
+                      </>
+                    )}
+                  </button>
                   <button className="flex-1 px-3 py-2 text-xs text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2">
                     <HelpCircle className="w-4 h-4" />
                     Help
@@ -198,6 +217,7 @@ export default function Sidebar() {
                 </div>
               </div>
             ) : (
+              // Collapsed state
               <div className="flex flex-col items-center gap-3">
                 <div className="relative">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-blue-500/20">
@@ -206,8 +226,12 @@ export default function Sidebar() {
                   <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-gray-800" />
                 </div>
                 <div className="flex flex-col items-center gap-1">
-                  <button className="p-1.5 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white">
-                    <Settings className="w-4 h-4" />
+                  <button 
+                    onClick={toggleTheme}
+                    className="p-1.5 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
+                    title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                  >
+                    {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                   </button>
                   <button className="p-1.5 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white">
                     <LogOut className="w-4 h-4" />

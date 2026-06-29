@@ -17,15 +17,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <div className="flex h-screen bg-gray-50">
+    <html lang="en" className="transition-colors duration-300">
+      <body className={`${inter.className} bg-gray-50 dark:bg-gray-900 transition-colors duration-300`}>
+        <div className="flex h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
           <Sidebar />
-          <main className="flex-1 overflow-y-auto lg:ml-64 transition-all duration-300">
+          <main className="flex-1 overflow-y-auto lg:ml-64 transition-all duration-300 bg-gray-50 dark:bg-gray-900">
             {children}
           </main>
         </div>
-        <Toaster position="top-right" />
+        <Toaster 
+          position="top-right"
+          toastOptions={{
+            className: 'dark:bg-gray-800 dark:text-white',
+            style: {
+              background: '#ffffff',
+              color: '#1f2937',
+            },
+          }}
+        />
       </body>
     </html>
   );
