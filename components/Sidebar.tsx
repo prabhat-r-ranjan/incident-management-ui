@@ -15,7 +15,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
-  X
+  X,
+  User,
+  LogOut,
+  HelpCircle,
+  Star
 } from 'lucide-react';
 
 interface NavItem {
@@ -23,6 +27,7 @@ interface NavItem {
   href: string;
   icon: React.ReactNode;
   badge?: number;
+  color?: string;
 }
 
 export default function Sidebar() {
@@ -31,14 +36,13 @@ export default function Sidebar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const navItems: NavItem[] = [
-    { name: 'Dashboard', href: '/', icon: <LayoutDashboard className="w-5 h-5" /> },
-    { name: 'Incidents', href: '/incidents', icon: <AlertCircle className="w-5 h-5" />, badge: 12 },
-    { name: 'New Incident', href: '/incidents/new', icon: <PlusCircle className="w-5 h-5" /> },
-    { name: 'Problems', href: '/problems', icon: <AlertTriangle className="w-5 h-5" /> },
-    { name: 'Changes', href: '/changes', icon: <RefreshCw className="w-5 h-5" /> },
-    { name: 'Reports', href: '/reports', icon: <FileText className="w-5 h-5" /> },
-    { name: 'Alerts', href: '/alerts', icon: <Bell className="w-5 h-5" />, badge: 3 },
-    { name: 'Settings', href: '/settings', icon: <Settings className="w-5 h-5" /> },
+    { name: 'Dashboard', href: '/', icon: <LayoutDashboard className="w-5 h-5" />, color: 'text-blue-500' },
+    { name: 'Incidents', href: '/incidents', icon: <AlertCircle className="w-5 h-5" />, badge: 12, color: 'text-red-500' },
+    { name: 'New Incident', href: '/incidents/new', icon: <PlusCircle className="w-5 h-5" />, color: 'text-green-500' },
+    { name: 'Problems', href: '/problems', icon: <AlertTriangle className="w-5 h-5" />, color: 'text-yellow-500' },
+    { name: 'Changes', href: '/changes', icon: <RefreshCw className="w-5 h-5" />, color: 'text-purple-500' },
+    { name: 'Reports', href: '/reports', icon: <FileText className="w-5 h-5" />, color: 'text-indigo-500' },
+    { name: 'Alerts', href: '/alerts', icon: <Bell className="w-5 h-5" />, badge: 3, color: 'text-orange-500' },
   ];
 
   return (
@@ -46,7 +50,7 @@ export default function Sidebar() {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md hover:bg-gray-50 transition-colors"
+        className="lg:hidden fixed top-4 left-4 z-50 p-3 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-white"
       >
         {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
@@ -54,7 +58,7 @@ export default function Sidebar() {
       {/* Overlay for mobile */}
       {isMobileOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
@@ -62,36 +66,43 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 h-full bg-white border-r border-gray-200 z-40
+          fixed top-0 left-0 h-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 z-40
           transition-all duration-300 ease-in-out
           ${isCollapsed ? 'w-20' : 'w-64'}
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          shadow-2xl
         `}
       >
+        {/* Decorative gradient line at top */}
+        <div className="h-1 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400" />
+
         {/* Logo */}
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
+        <div className="flex items-center justify-between h-16 px-4 border-b border-white/10">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <AlertCircle className="w-5 h-5 text-white" />
+            <div className="relative">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/30">
+                <AlertCircle className="w-5 h-5 text-white" />
+              </div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-gray-800 animate-pulse" />
             </div>
             {!isCollapsed && (
               <div className="flex flex-col">
-                <span className="text-sm font-semibold text-gray-900 truncate">Incident Manager</span>
-                <span className="text-[10px] text-gray-500">v2.0.0</span>
+                <span className="text-sm font-bold text-white truncate tracking-wide">Incident Manager</span>
+                <span className="text-[10px] text-gray-400 font-medium">v2.0.0</span>
               </div>
             )}
           </div>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="hidden lg:flex p-1 hover:bg-gray-100 rounded-lg transition-colors"
+            className="hidden lg:flex p-1.5 hover:bg-white/10 rounded-lg transition-all duration-300 text-gray-400 hover:text-white"
           >
-            {isCollapsed ? <ChevronRight className="w-4 h-4 text-gray-500" /> : <ChevronLeft className="w-4 h-4 text-gray-500" />}
+            {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3">
-          <div className="space-y-1">
+        <nav className="flex-1 overflow-y-auto py-6 px-3">
+          <div className="space-y-1.5">
             {navItems.map((item) => {
               const isActive = pathname === item.href || (item.href !== '/' && pathname?.startsWith(item.href));
               return (
@@ -100,52 +111,111 @@ export default function Sidebar() {
                   href={item.href}
                   onClick={() => setIsMobileOpen(false)}
                   className={`
-                    flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
+                    group relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                     ${isActive 
-                      ? 'bg-blue-50 text-blue-700 shadow-sm' 
-                      : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-white/10 text-white shadow-lg shadow-white/5' 
+                      : 'text-gray-400 hover:text-white hover:bg-white/5'
                     }
                     ${isCollapsed ? 'justify-center' : ''}
                   `}
                 >
-                  <span className={`${isActive ? 'text-blue-700' : 'text-gray-500'} flex-shrink-0`}>
+                  {/* Active indicator */}
+                  {isActive && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-400 to-purple-400 rounded-r-full" />
+                  )}
+                  
+                  <span className={`${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'} flex-shrink-0 transition-colors duration-200`}>
                     {item.icon}
                   </span>
+                  
                   {!isCollapsed && (
                     <>
                       <span className="text-sm font-medium flex-1">{item.name}</span>
                       {item.badge && (
                         <span className={`
-                          text-xs px-2 py-0.5 rounded-full font-medium
-                          ${isActive ? 'bg-blue-200 text-blue-800' : 'bg-gray-200 text-gray-700'}
+                          text-xs px-2.5 py-0.5 rounded-full font-semibold
+                          ${isActive 
+                            ? 'bg-white/20 text-white' 
+                            : 'bg-white/10 text-gray-300 group-hover:bg-white/20'
+                          }
+                          transition-all duration-200
                         `}>
                           {item.badge}
                         </span>
                       )}
                     </>
                   )}
+                  
                   {isCollapsed && item.badge && (
-                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-red-500/30">
+                      {item.badge}
+                    </span>
+                  )}
+
+                  {/* Tooltip for collapsed state */}
+                  {isCollapsed && (
+                    <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 whitespace-nowrap border border-white/10">
+                      {item.name}
+                      {item.badge && ` (${item.badge})`}
+                    </div>
                   )}
                 </Link>
               );
             })}
           </div>
 
-          {/* Bottom Section - User Profile */}
-          {!isCollapsed && (
-            <div className="mt-auto pt-4 border-t border-gray-200">
-              <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-medium flex-shrink-0">
-                  PR
+          {/* Bottom Section */}
+          <div className="mt-8 pt-4 border-t border-white/10">
+            {!isCollapsed ? (
+              <div className="space-y-1">
+                <div className="flex items-center gap-3 px-3 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-200 cursor-pointer group">
+                  <div className="relative">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-lg shadow-blue-500/20">
+                      PR
+                    </div>
+                    <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-gray-800" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-white truncate">Prabhat Ranjan</p>
+                    <p className="text-xs text-gray-400 truncate">Administrator</p>
+                  </div>
+                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <button className="p-1 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white">
+                      <Settings className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">Prabhat Ranjan</p>
-                  <p className="text-xs text-gray-500 truncate">Admin</p>
+                
+                <div className="flex items-center gap-1 px-2">
+                  <button className="flex-1 px-3 py-2 text-xs text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2">
+                    <HelpCircle className="w-4 h-4" />
+                    Help
+                  </button>
+                  <button className="flex-1 px-3 py-2 text-xs text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2">
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </button>
                 </div>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="flex flex-col items-center gap-3">
+                <div className="relative">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-blue-500/20">
+                    PR
+                  </div>
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-gray-800" />
+                </div>
+                <div className="flex flex-col items-center gap-1">
+                  <button className="p-1.5 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white">
+                    <Settings className="w-4 h-4" />
+                  </button>
+                  <button className="p-1.5 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white">
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </nav>
       </aside>
     </>
